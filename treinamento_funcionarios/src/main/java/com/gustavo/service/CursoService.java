@@ -1,5 +1,6 @@
 package com.gustavo.service;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.gustavo.dto.CursoDTO;
 import com.gustavo.model.Curso;
@@ -25,9 +27,11 @@ public class CursoService {
         return repository.findAll();
     }
 
-    public ResponseEntity<String> salvarCurso(CursoDTO curso){
-        repository.save(curso.nome(), curso.descricao(), curso.duracao());
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<Optional<Curso>> salvarCurso(CursoDTO curso){
+        repository.saveCurso(curso.nome(), curso.descricao(), curso.duracao());
+        Optional<Curso> newCurso = repository.findByCodigo(repository.getLastId());
+        URI uri = UriComponentsBuilder.fromPath("localhost:8080/cursos").build().toUri();
+        return ResponseEntity.created(uri).body(newCurso);
     }
 
     public Optional<Curso> procurarPorCodigo(int id){
@@ -39,6 +43,15 @@ public class CursoService {
             turmaRepository.deleteTurmaByCurso(id);
             repository.deleteCursoById(id);
             return ResponseEntity.ok().build();
+        }
+        else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum curso com código "+id+" encontrado.");
+    }
+
+    public ResponseEntity<Curso> atualizarCurso(int id, CursoDTO curso) throws ResponseStatusException{
+        if (repository.findByCodigo(id).isPresent()){
+            repository.updateCursoById(id, curso.nome(), curso.descricao(), curso.duracao());
+
+            return ResponseEntity.ok(repository.findByCodigo(id).get());
         }
         else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum curso com código "+id+" encontrado.");
     }
