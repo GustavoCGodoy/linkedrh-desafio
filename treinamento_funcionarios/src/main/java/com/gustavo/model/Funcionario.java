@@ -11,17 +11,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name="turma")
+@Table(name="funcionario")
 @EqualsAndHashCode(of="codigo")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Turma {
+public class Funcionario {
     @Id
     private int codigo;
-    private LocalDate inicio;
-    private LocalDate fim;
-    private String local_treinamento;
-    private int curso;
+    private String nome;
+    private String cpf;
+    private LocalDate nascimento;
+    private String cargo;
+    private LocalDate admissao;
+    private boolean status_funcionario;
 }

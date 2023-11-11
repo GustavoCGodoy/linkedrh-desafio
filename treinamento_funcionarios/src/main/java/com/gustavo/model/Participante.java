@@ -1,7 +1,4 @@
 package com.gustavo.model;
-
-import java.time.LocalDate;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -11,17 +8,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name="turma")
+@Table(name="turmaparticipante")
 @EqualsAndHashCode(of="codigo")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Turma {
+public class Participante {
     @Id
     private int codigo;
-    private LocalDate inicio;
-    private LocalDate fim;
-    private String local_treinamento;
-    private int curso;
+    private int turma;
+    private int funcionario;
 }

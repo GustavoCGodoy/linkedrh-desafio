@@ -2,7 +2,6 @@ package com.gustavo.repository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
@@ -19,8 +18,15 @@ public interface TurmaRepository extends CrudRepository<Turma, Integer>{
     List<Turma> findByCurso(@Param("id") int curso);
 
     @Query("SELECT * FROM turma WHERE Codigo = :id")
-    Optional<Turma> findTurmaByCodigo(@Param("id") int id);
+    List<Turma> findTurmaByCodigo(@Param("id") int id);
+
+    @Query("SELECT codigo FROM turma WHERE Curso = :id")
+    List<Integer> findCodigoByCurso(@Param("id") int id);
     
+    @Modifying
+    @Query("DELETE FROM turma WHERE Codigo = :id")
+    void deleteTurmaByCodigo(@Param("id") int id);
+
     @Modifying
     @Query("DELETE from turma WHERE Curso = :id")
     void deleteTurmaByCurso(@Param("id") int id);

@@ -14,6 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.gustavo.dto.CursoDTO;
 import com.gustavo.model.Curso;
 import com.gustavo.repository.CursoRepository;
+import com.gustavo.repository.ParticipanteRepository;
 import com.gustavo.repository.TurmaRepository;
 
 @Service
@@ -22,6 +23,8 @@ public class CursoService {
     private CursoRepository repository;
     @Autowired
     private TurmaRepository turmaRepository;
+    @Autowired
+    private ParticipanteRepository participanteRepository;
 
     public List<Curso> listarCursos(){
         return repository.findAll();
@@ -40,6 +43,10 @@ public class CursoService {
 
     public ResponseEntity<String> deletarCurso(int id) throws ResponseStatusException{
         if (repository.findByCodigo(id).isPresent()){
+            List<Integer> turmasApagadas = turmaRepository.findCodigoByCurso(id);
+            for (Integer integer : turmasApagadas) {
+                participanteRepository.deleteParticipanteByTurma(integer.intValue());
+            }
             turmaRepository.deleteTurmaByCurso(id);
             repository.deleteCursoById(id);
             return ResponseEntity.ok().build();

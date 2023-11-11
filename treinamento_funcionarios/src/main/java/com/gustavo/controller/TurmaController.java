@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gustavo.dto.PatchTurmaDTO;
+import com.gustavo.dto.ResponseTurma;
 import com.gustavo.dto.TurmaDTO;
 import com.gustavo.model.Turma;
 import com.gustavo.service.TurmaService;
@@ -27,8 +29,8 @@ public class TurmaController {
     TurmaService service;
 
     @GetMapping("/{id_curso}")
-    public ResponseEntity<List<Turma>> getTurma(@PathVariable int id_curso){
-        return ResponseEntity.ok(service.procurarTurma(id_curso));
+    public ResponseEntity<List<ResponseTurma>> getTurma(@PathVariable int id_curso){
+        return service.procurarTurma(id_curso);
     }
 
     @PostMapping
@@ -39,5 +41,10 @@ public class TurmaController {
     @PatchMapping("/{id}")
     public ResponseEntity<Turma> patchTurma(@PathVariable int id, @RequestBody @Valid PatchTurmaDTO turma){
         return service.atualizarTurma(id, turma);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteTurma(@PathVariable int id){
+        return service.deletarTurma(id);
     }
 }
