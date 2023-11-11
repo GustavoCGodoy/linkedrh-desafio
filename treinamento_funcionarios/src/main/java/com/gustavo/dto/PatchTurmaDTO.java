@@ -1,6 +1,6 @@
 package com.gustavo.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
-public record PatchTurmaDTO(Date inicio, Date fim, String local_treinamento) {
+public record PatchTurmaDTO(LocalDate inicio, LocalDate fim, String local_treinamento) {
 }

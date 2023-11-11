@@ -38,7 +38,6 @@ public class TurmaController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Turma> patchTurma(@PathVariable int id, @RequestBody @Valid PatchTurmaDTO turma){
-        System.out.println(turma);
         return service.atualizarTurma(id, turma);
     }
 }

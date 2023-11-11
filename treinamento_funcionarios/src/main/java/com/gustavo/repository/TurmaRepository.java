@@ -1,6 +1,6 @@
 package com.gustavo.repository;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,12 +27,12 @@ public interface TurmaRepository extends CrudRepository<Turma, Integer>{
 
     @Modifying
     @Query("INSERT INTO turma (Inicio, Fim, Local_treinamento, Curso) values (:inicio, :fim, :local_treinamento, :curso)")
-    boolean saveTurma(@Param("inicio") Date inicio,@Param("fim") Date fim,@Param("local_treinamento") String local_treinamento,@Param("curso") int curso);
+    boolean saveTurma(@Param("inicio") LocalDate inicio,@Param("fim") LocalDate fim,@Param("local_treinamento") String local_treinamento,@Param("curso") int curso);
 
     @Query("SELECT LAST_INSERT_ID()")
     int getLastId();
 
     @Modifying
     @Query("UPDATE turma SET Inicio = :inicio, Fim = :fim, Local_treinamento = :local_treinamento WHERE Codigo = :id")
-    boolean updateTurmaById(@Param("id") int codigo, @Param("inicio") Date inicio, @Param("fim") Date fim,@Param("local_treinamento") String local_treinamento);
+    boolean updateTurmaById(@Param("id") int codigo, @Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim,@Param("local_treinamento") String local_treinamento);
 }

@@ -1,6 +1,6 @@
 package com.gustavo.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
-public record TurmaDTO(Date inicio, Date fim, String local_treinamento, int curso) {
+public record TurmaDTO(LocalDate inicio, LocalDate fim, String local_treinamento, int curso) {
 }
