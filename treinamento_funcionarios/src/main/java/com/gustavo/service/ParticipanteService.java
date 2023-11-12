@@ -30,9 +30,10 @@ public class ParticipanteService {
     @Autowired
     private FuncionarioRepository funcionarioRepository;
 
+    @Autowired TurmaService turmaService;
 
     public ResponseEntity<ResponseParticipante> procurarParticipantes(int id){
-        verificarExistenciaTurma(id);
+        turmaService.verificarExistenciaTurma(id);
         List<Participante> participantes = repository.findParticipantesByTurma(id);
 
         if(participantes.isEmpty()){
@@ -53,7 +54,7 @@ public class ParticipanteService {
     }
 
     public ResponseEntity<Participante> salvarParticipante(ParticipanteDTO participante){
-        verificarExistenciaTurma(participante.turma());
+        turmaService.verificarExistenciaTurma(participante.turma());
         repository.saveParticipante(participante.turma(), participante.funcionario());
         Participante newParticipante = repository.findParticipanteByCodigo(repository.getLastId()).get(0);
         URI uri = UriComponentsBuilder.fromPath("localhost:8080/participantes/{turma_id}").buildAndExpand(participante.turma()).toUri();
@@ -69,14 +70,6 @@ public class ParticipanteService {
 
         repository.deleteParticipanteByCodigo(id);
         return ResponseEntity.ok().build();
-    }
-
-    public void verificarExistenciaTurma(int id){
-
-        if(turmaRepository.findTurmaByCodigo(id).isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Nenhuma turma de código "+id+" encontrada.");
-        }
-
     }
     
 }

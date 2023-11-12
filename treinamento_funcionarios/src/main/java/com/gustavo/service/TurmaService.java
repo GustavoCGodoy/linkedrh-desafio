@@ -61,7 +61,7 @@ public class TurmaService {
     }
 
     public ResponseEntity<Turma> atualizarTurma(int id, PatchTurmaDTO turma){
-        turmaExiste(id);
+        verificarExistenciaTurma(id);
         repository.updateTurmaById(id, turma.inicio(), turma.fim(), turma.local_treinamento());
         Turma updateTurma = repository.findTurmaByCodigo(id).get(0);
         URI uri = UriComponentsBuilder.fromPath("localhost:8080/turmas/{id}").buildAndExpand(updateTurma.getCurso()).toUri();
@@ -69,13 +69,13 @@ public class TurmaService {
     }
 
     public ResponseEntity<String> deletarTurma(int id){
-        turmaExiste(id);
+        verificarExistenciaTurma(id);
         participanteRepository.deleteParticipanteByTurma(id);
         repository.deleteTurmaByCodigo(id);
         return ResponseEntity.ok().build();
     }
 
-    public void turmaExiste(int id){
+    public void verificarExistenciaTurma(int id){
 
         if ((repository.findTurmaByCodigo(id).isEmpty())){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Turma com o código "+id+" inexistente");
