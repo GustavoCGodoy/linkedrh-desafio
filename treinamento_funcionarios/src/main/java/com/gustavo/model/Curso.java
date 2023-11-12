@@ -16,6 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Curso {
+    
     @Id
     private int codigo;
     private String nome;

@@ -20,6 +20,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/participantes")
 public class ParticipanteController {
+    
     @Autowired
     private ParticipanteService service;
     

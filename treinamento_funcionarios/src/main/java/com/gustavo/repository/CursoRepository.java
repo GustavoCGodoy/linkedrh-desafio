@@ -15,14 +15,9 @@ import com.gustavo.model.Curso;
 @Repository
 @Transactional
 public interface CursoRepository extends CrudRepository<Curso, Integer>{
-
-    @Modifying
-    @Query("DELETE FROM curso WHERE codigo = :id")
-    void deleteCursoById(@Param("id") Integer id);
-
-    @Modifying
-    @Query("INSERT INTO curso (Nome, Descricao, Duracao) VALUES (:nome, :descricao, :duracao)")
-    boolean saveCurso(@Param("nome") String nome,@Param("descricao") String descricao,@Param("duracao") int duracao);
+    
+    @Query("SELECT LAST_INSERT_ID()")
+    int getLastId();
 
     @Query("SELECT * FROM curso ORDER BY Codigo")
     List<Curso> findAll();
@@ -31,9 +26,15 @@ public interface CursoRepository extends CrudRepository<Curso, Integer>{
     Optional<Curso> findByCodigo(@Param("id") int id);
 
     @Modifying
+    @Query("INSERT INTO curso (Nome, Descricao, Duracao) VALUES (:nome, :descricao, :duracao)")
+    boolean saveCurso(@Param("nome") String nome,@Param("descricao") String descricao,@Param("duracao") int duracao);
+
+    @Modifying
     @Query("UPDATE curso SET Nome = :nome, Descricao = :descricao, Duracao = :duracao WHERE Codigo = :id")
     boolean updateCursoById(@Param("id") int id, @Param("nome") String nome,@Param("descricao") String descricao,@Param("duracao") int duracao);
+    
+    @Modifying
+    @Query("DELETE FROM curso WHERE codigo = :id")
+    void deleteCursoById(@Param("id") Integer id);
 
-    @Query("SELECT LAST_INSERT_ID()")
-    int getLastId();
 }

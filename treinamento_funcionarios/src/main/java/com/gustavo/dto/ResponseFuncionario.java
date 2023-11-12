@@ -12,6 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseFuncionario {
+    
     private int codigo;
     private Funcionario funcionario;
 }

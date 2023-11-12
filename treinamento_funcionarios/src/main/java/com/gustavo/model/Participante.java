@@ -15,6 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Participante {
+    
     @Id
     private int codigo;
     private int turma;

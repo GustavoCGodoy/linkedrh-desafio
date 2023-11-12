@@ -14,7 +14,10 @@ import com.gustavo.model.Turma;
 @Repository
 public interface TurmaRepository extends CrudRepository<Turma, Integer>{
 
-    @Query("SELECT * FROM turma WHERE Curso = :id")
+    @Query("SELECT LAST_INSERT_ID()")
+    int getLastId();
+
+    @Query("SELECT * FROM turma WHERE Curso = :id ORDER BY Inicio, Fim")
     List<Turma> findByCurso(@Param("id") int curso);
 
     @Query("SELECT * FROM turma WHERE Codigo = :id")
@@ -22,6 +25,14 @@ public interface TurmaRepository extends CrudRepository<Turma, Integer>{
 
     @Query("SELECT codigo FROM turma WHERE Curso = :id")
     List<Integer> findCodigoByCurso(@Param("id") int id);
+
+    @Modifying
+    @Query("INSERT INTO turma (Inicio, Fim, Local_treinamento, Curso) values (:inicio, :fim, :local_treinamento, :curso)")
+    boolean saveTurma(@Param("inicio") LocalDate inicio,@Param("fim") LocalDate fim,@Param("local_treinamento") String local_treinamento,@Param("curso") int curso);
+
+    @Modifying
+    @Query("UPDATE turma SET Inicio = :inicio, Fim = :fim, Local_treinamento = :local_treinamento WHERE Codigo = :id")
+    boolean updateTurmaById(@Param("id") int codigo, @Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim,@Param("local_treinamento") String local_treinamento);
     
     @Modifying
     @Query("DELETE FROM turma WHERE Codigo = :id")
@@ -31,14 +42,4 @@ public interface TurmaRepository extends CrudRepository<Turma, Integer>{
     @Query("DELETE from turma WHERE Curso = :id")
     void deleteTurmaByCurso(@Param("id") int id);
 
-    @Modifying
-    @Query("INSERT INTO turma (Inicio, Fim, Local_treinamento, Curso) values (:inicio, :fim, :local_treinamento, :curso)")
-    boolean saveTurma(@Param("inicio") LocalDate inicio,@Param("fim") LocalDate fim,@Param("local_treinamento") String local_treinamento,@Param("curso") int curso);
-
-    @Query("SELECT LAST_INSERT_ID()")
-    int getLastId();
-
-    @Modifying
-    @Query("UPDATE turma SET Inicio = :inicio, Fim = :fim, Local_treinamento = :local_treinamento WHERE Codigo = :id")
-    boolean updateTurmaById(@Param("id") int codigo, @Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim,@Param("local_treinamento") String local_treinamento);
 }

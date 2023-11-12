@@ -14,6 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseParticipante {
+
     private Turma turma;
     private List<ResponseFuncionario> participantes;
 }

@@ -12,4 +12,5 @@ public interface FuncionarioRepository extends CrudRepository<Funcionario, Integ
 
     @Query("SELECT * FROM funcionario WHERE Codigo = :id")
     Funcionario findFuncionarioByCodigo(@Param("id") int id);
+    
 }

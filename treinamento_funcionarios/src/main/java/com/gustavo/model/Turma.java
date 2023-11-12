@@ -18,10 +18,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Turma {
+
     @Id
     private int codigo;
     private LocalDate inicio;
     private LocalDate fim;
     private String local_treinamento;
     private int curso;
+
 }

@@ -12,6 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseTurma {
+    
     private Turma turma;
     private int participantes;
 }

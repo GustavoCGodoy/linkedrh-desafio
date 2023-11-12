@@ -19,12 +19,16 @@ import com.gustavo.repository.TurmaRepository;
 
 @Service
 public class CursoService {
+
     @Autowired
     private CursoRepository repository;
+
     @Autowired
     private TurmaRepository turmaRepository;
+
     @Autowired
     private ParticipanteRepository participanteRepository;
+
 
     public List<Curso> listarCursos(){
         return repository.findAll();
@@ -38,8 +42,8 @@ public class CursoService {
     }
 
     public Optional<Curso> procurarPorCodigo(int id){
-            return repository.findByCodigo(id);
-        }
+        return repository.findByCodigo(id);
+    }
 
     public ResponseEntity<String> deletarCurso(int id) throws ResponseStatusException{
         if (repository.findByCodigo(id).isPresent()){
@@ -62,4 +66,5 @@ public class CursoService {
         }
         else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum curso com código "+id+" encontrado.");
     }
+
 }

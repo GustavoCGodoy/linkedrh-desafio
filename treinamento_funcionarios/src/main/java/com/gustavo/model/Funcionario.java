@@ -18,6 +18,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Funcionario {
+    
     @Id
     private int codigo;
     private String nome;

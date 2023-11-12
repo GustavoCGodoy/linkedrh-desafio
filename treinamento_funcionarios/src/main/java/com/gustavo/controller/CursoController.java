@@ -23,6 +23,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/cursos")
 public class CursoController {
+    
     @Autowired
     CursoService service;
 

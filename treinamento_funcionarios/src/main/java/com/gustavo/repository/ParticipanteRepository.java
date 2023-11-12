@@ -13,15 +13,11 @@ import com.gustavo.model.Participante;
 @Repository
 public interface ParticipanteRepository extends CrudRepository<Participante, Integer>{
 
-    @Query("SELECT * FROM turmaparticipante WHERE Turma = :id")
-    List<Participante> findParticipantesByTurma(@Param("id") int id);
-
-    @Modifying
-    @Query("INSERT INTO turmaparticipante (Turma, Funcionario) values (:turma, :funcionario)")
-    boolean saveParticipante(@Param("turma") int turma, @Param("funcionario") int funcionario);
-
     @Query("SELECT LAST_INSERT_ID()")
     int getLastId();
+
+    @Query("SELECT * FROM turmaparticipante WHERE Turma = :id")
+    List<Participante> findParticipantesByTurma(@Param("id") int id);
 
     @Query("SELECT * FROM turmaparticipante WHERE Codigo = :id")
     List<Participante> findParticipanteByCodigo(@Param("id") int id);
@@ -31,6 +27,10 @@ public interface ParticipanteRepository extends CrudRepository<Participante, Int
 
     @Query("SELECT Count(Codigo) FROM turmaparticipante WHERE Turma = :id")
     int countParticipantes(@Param("id") int id);
+    
+    @Modifying
+    @Query("INSERT INTO turmaparticipante (Turma, Funcionario) values (:turma, :funcionario)")
+    boolean saveParticipante(@Param("turma") int turma, @Param("funcionario") int funcionario);
 
     @Modifying
     @Query("DELETE from turmaparticipante WHERE Codigo = :id")
