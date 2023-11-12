@@ -30,8 +30,12 @@ public class CursoService {
     private ParticipanteRepository participanteRepository;
 
 
-    public List<Curso> listarCursos(){
-        return repository.findAll();
+    public ResponseEntity<List<Curso>> listarCursos(){
+        List<Curso> cursos = repository.findAll();
+        if (cursos.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        else return ResponseEntity.ok(cursos);
     }
 
     public ResponseEntity<Optional<Curso>> salvarCurso(CursoDTO curso){
@@ -46,25 +50,29 @@ public class CursoService {
     }
 
     public ResponseEntity<String> deletarCurso(int id) throws ResponseStatusException{
-        if (repository.findByCodigo(id).isPresent()){
-            List<Integer> turmasApagadas = turmaRepository.findCodigoByCurso(id);
-            for (Integer integer : turmasApagadas) {
-                participanteRepository.deleteParticipanteByTurma(integer.intValue());
-            }
-            turmaRepository.deleteTurmaByCurso(id);
-            repository.deleteCursoById(id);
-            return ResponseEntity.ok().build();
+        verificarExistenciaCurso(id);
+
+        List<Integer> turmasApagadas = turmaRepository.findCodigoByCurso(id);
+        for (Integer turmaApagada : turmasApagadas) {
+            participanteRepository.deleteParticipanteByTurma(turmaApagada.intValue());
         }
-        else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum curso com código "+id+" encontrado.");
+        
+        turmaRepository.deleteTurmaByCurso(id);
+        repository.deleteCursoById(id);
+        return ResponseEntity.ok().build();
     }
 
     public ResponseEntity<Curso> atualizarCurso(int id, CursoDTO curso) throws ResponseStatusException{
-        if (repository.findByCodigo(id).isPresent()){
-            repository.updateCursoById(id, curso.nome(), curso.descricao(), curso.duracao());
+        verificarExistenciaCurso(id);
+        repository.updateCursoById(id, curso.nome(), curso.descricao(), curso.duracao());
 
-            return ResponseEntity.ok(repository.findByCodigo(id).get());
+        return ResponseEntity.ok(repository.findByCodigo(id).get());
+    }
+
+    public void verificarExistenciaCurso(int id){
+        if (repository.findByCodigo(id).isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum curso com o código "+id+" existente.");
         }
-        else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum curso com código "+id+" encontrado.");
     }
 
 }

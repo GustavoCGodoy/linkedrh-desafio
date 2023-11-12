@@ -29,8 +29,7 @@ public class CursoController {
 
     @GetMapping
     public ResponseEntity<List<Curso>> getAllCursos(){
-        var allCursos = service.listarCursos();
-        return ResponseEntity.ok(allCursos);
+        return service.listarCursos();
     }
 
     @PostMapping

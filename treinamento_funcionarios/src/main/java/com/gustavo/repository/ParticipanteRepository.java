@@ -1,6 +1,7 @@
 package com.gustavo.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
@@ -21,6 +22,9 @@ public interface ParticipanteRepository extends CrudRepository<Participante, Int
 
     @Query("SELECT * FROM turmaparticipante WHERE Codigo = :id")
     List<Participante> findParticipanteByCodigo(@Param("id") int id);
+
+    @Query("SELECT * FROM turmaparticipante WHERE Turma = :turma AND Funcionario = :funcionario")
+    Optional<Participante> verifyParticipanteExistence(@Param("turma") int turma, @Param("funcionario") int funcionario);
 
     @Query("SELECT Funcionario FROM turmaparticipante WHERE Codigo = :id")
     int getFuncionarioByParticipanteCodigo(@Param("id") int id);

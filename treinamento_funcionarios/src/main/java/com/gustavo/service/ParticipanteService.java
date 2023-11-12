@@ -37,7 +37,7 @@ public class ParticipanteService {
         List<Participante> participantes = repository.findParticipantesByTurma(id);
 
         if(participantes.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum participante encontrado na turma "+id);
+            return ResponseEntity.noContent().build();
         }
 
         List<ResponseFuncionario> funcionarios = new ArrayList<ResponseFuncionario>();
@@ -55,6 +55,9 @@ public class ParticipanteService {
 
     public ResponseEntity<Participante> salvarParticipante(ParticipanteDTO participante){
         turmaService.verificarExistenciaTurma(participante.turma());
+        if(repository.verifyParticipanteExistence(participante.turma(), participante.funcionario()).isPresent()){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Funcionário "+participante.funcionario()+" já participa da Turma "+participante.turma());
+        }
         repository.saveParticipante(participante.turma(), participante.funcionario());
         Participante newParticipante = repository.findParticipanteByCodigo(repository.getLastId()).get(0);
         URI uri = UriComponentsBuilder.fromPath("localhost:8080/participantes/{turma_id}").buildAndExpand(participante.turma()).toUri();

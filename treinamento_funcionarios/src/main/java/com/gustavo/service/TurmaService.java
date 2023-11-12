@@ -16,7 +16,6 @@ import com.gustavo.dto.PatchTurmaDTO;
 import com.gustavo.dto.ResponseTurma;
 import com.gustavo.dto.TurmaDTO;
 import com.gustavo.model.Turma;
-import com.gustavo.repository.CursoRepository;
 import com.gustavo.repository.ParticipanteRepository;
 import com.gustavo.repository.TurmaRepository;
 
@@ -27,21 +26,20 @@ public class TurmaService {
     private TurmaRepository repository;
 
     @Autowired
-    private CursoRepository cursoRepository;
+    private CursoService cursoService;
 
     @Autowired
     private ParticipanteRepository participanteRepository;
 
 
     public ResponseEntity<List<ResponseTurma>> procurarTurma(int curso) throws ResponseStatusException{
+        cursoService.verificarExistenciaCurso(curso);
         List<Turma> turmas = repository.findByCurso(curso);
-
         if (turmas.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "Nenhuma turma encontrada com o curso de código "+curso+" encontrada");
+            ResponseEntity.noContent().build();
         }
 
         List<ResponseTurma> responseTurma = new ArrayList<ResponseTurma>();
-
         for (Turma turma : turmas) {
             responseTurma.add(new ResponseTurma(turma,participanteRepository.countParticipantes(turma.getCodigo())));
         }
@@ -51,17 +49,17 @@ public class TurmaService {
 
     public ResponseEntity<Optional<Turma>> salvarTurma(TurmaDTO turma) throws ResponseStatusException{
 
-        if ((cursoRepository.findByCodigo(turma.curso()).isPresent())&&(repository.saveTurma(turma.inicio(), turma.fim(), turma.local_treinamento(), turma.curso()))){
-            Optional<Turma> newTurma = repository.findById(repository.getLastId());
-            URI uri = UriComponentsBuilder.fromPath("localhost:8080/turmas/{codigo}").buildAndExpand(turma.curso()).toUri();
-            return ResponseEntity.created(uri).body(newTurma);
-        }
+        cursoService.verificarExistenciaCurso(turma.curso());
 
-        else throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Nenhum curso com o código "+turma.curso() +" existente");
+        repository.saveTurma(turma.inicio(), turma.fim(), turma.local_treinamento(), turma.curso());
+        Optional<Turma> newTurma = repository.findById(repository.getLastId());
+        URI uri = UriComponentsBuilder.fromPath("localhost:8080/turmas/{codigo}").buildAndExpand(turma.curso()).toUri();
+        return ResponseEntity.created(uri).body(newTurma);
     }
 
     public ResponseEntity<Turma> atualizarTurma(int id, PatchTurmaDTO turma){
         verificarExistenciaTurma(id);
+
         repository.updateTurmaById(id, turma.inicio(), turma.fim(), turma.local_treinamento());
         Turma updateTurma = repository.findTurmaByCodigo(id).get(0);
         URI uri = UriComponentsBuilder.fromPath("localhost:8080/turmas/{id}").buildAndExpand(updateTurma.getCurso()).toUri();
@@ -70,6 +68,7 @@ public class TurmaService {
 
     public ResponseEntity<String> deletarTurma(int id){
         verificarExistenciaTurma(id);
+
         participanteRepository.deleteParticipanteByTurma(id);
         repository.deleteTurmaByCodigo(id);
         return ResponseEntity.ok().build();
